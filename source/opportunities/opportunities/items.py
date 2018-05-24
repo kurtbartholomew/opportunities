@@ -19,6 +19,8 @@ class OpportunitiesItem(scrapy.Item):
     TITLE_SELECTOR = 'a[@class="result-title"]/text()'
     # selector for date ad was posted (in format of YYYY-MM-DDTHH:MM:SS-MMMM)
     DATE_SELECTOR = 'time[@class="result-date"]/@datetime'
+    PAGINATION_REGEX = 'search\/\w+\?s='
+    PAGINATION_SELECTOR = '//span[@class="buttons"]/a[@class="button next"]'
 
 
 class AdItem(scrapy.Item):
