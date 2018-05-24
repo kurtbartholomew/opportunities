@@ -1,0 +1,7 @@
+.vscode
+env
+*.swp
+__pycache__
+hackernews
+wikipedia
+socrata
