@@ -1,12 +1,12 @@
 import os
 
-from scrapy.http import Response, Request
+from scrapy.http import TextResponse, Request
 
 def fake_response_from_file(file_name, url=None):
     
 
     if not url:
-        url = "https://www.example.com"
+        url = "https://madison.craigslist.org/"
 
     request = Request(url=url)
     if not file_name[0] == '/':
@@ -21,14 +21,12 @@ def fake_response_from_file(file_name, url=None):
     
     if file_content is None:
         raise RuntimeError("Couldn't read in file")
-    
-    file_content = file_content.encode('utf-8')
 
-    response = Response(
+    response = TextResponse(
         url=url,
         request=request,
-        body=file_content
+        body=file_content,
+        encoding='utf-8'
     )
-    response.encoding = 'utf-8'
     return response
     

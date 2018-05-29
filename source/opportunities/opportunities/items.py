@@ -10,7 +10,6 @@ import scrapy
 
 class OpportunitiesItem(scrapy.Item):
     title = scrapy.Field()
-    description = scrapy.Field()
     date = scrapy.Field()
 
     # selector for seperate ad items
