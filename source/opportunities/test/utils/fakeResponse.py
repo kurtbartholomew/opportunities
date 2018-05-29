@@ -22,6 +22,8 @@ def fake_response_from_file(file_name, url=None):
     if file_content is None:
         raise RuntimeError("Couldn't read in file")
     
+    file_content = file_content.encode('utf-8')
+
     response = Response(
         url=url,
         request=request,

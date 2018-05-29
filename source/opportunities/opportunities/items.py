@@ -48,9 +48,9 @@ class AdItem(scrapy.Item):
     # parent selector for ad header
     HEADER_SECTION_PARENT_SELECTOR = '//span[@class="postingtitletext"]'
     # selector for title of ad
-    TITLE_SELECTOR = HEADER_SECTION_SELECTOR + '/span[@id="titletextonly"]/text()'
+    TITLE_SELECTOR = HEADER_SECTION_PARENT_SELECTOR + '/span[@id="titletextonly"]/text()'
     # selector for city of ad
-    AD_CITY_SELECTOR = HEADER_SECTION_SELECTOR + '/small/text()'
+    AD_CITY_SELECTOR = HEADER_SECTION_PARENT_SELECTOR + '/small/text()'
 
     # selector for date ad was posted (in format of YYYY-MM-DDTHH:MM:SS-MMMM)
     DATE_SELECTOR = '//p[@id="display-date"]/time/@datetime'

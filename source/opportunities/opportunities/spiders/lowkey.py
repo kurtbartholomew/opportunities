@@ -41,7 +41,7 @@ class LowkeySpider(CrawlSpider):
 
         # TODO: Factor out into clean method and handle as items for seperate table
         # For now, just turning into a string delimited by commas
-        attributes_keys = main_section.xpath(AdItem.AD_ATTRS_KEYS_SELECTOR)
+        attributes_keys = main_section.xpath(AdItem.AD_ATTRS_KEYS_SELECTOR) \
                                  .re(AdItem.Ad_ATTRS_REGEX)
         attributes_vals = main_section.xpath(AdItem.AD_ATTRS_VALS_SELECTOR).extract()
         attributes = ""
