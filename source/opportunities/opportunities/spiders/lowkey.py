@@ -7,10 +7,10 @@ from scrapy.linkextractors import LinkExtractor
 from ..items import OpportunitiesItem, AdItem
 import pdb
 
-class LowkeySpider(CrawlSpider):
+class LowkeySpider(Spider):
     name = 'lowkey'
-    allowed_domains = ['https://madison.craigslist.org/']
-    start_urls = ['http://https://madison.craigslist.org/d/jobs/search/jjj/']
+    allowed_domains = ['craigslist.org']
+    start_urls = ['https://madison.craigslist.org/d/jobs/search/jjj/']
 
     def parse(self, response):
         ads = Selector(response).xpath(OpportunitiesItem.ITEM_SELECTOR)
@@ -22,7 +22,6 @@ class LowkeySpider(CrawlSpider):
             url = ad.xpath(OpportunitiesItem.URL_SELECTOR).extract_first()
             # TODO: Add filters here
             # if title does not include filter items
-            yield item
             yield scrapy.Request(url, self.parse_ad)
     
 
@@ -32,7 +31,8 @@ class LowkeySpider(CrawlSpider):
 
         item = AdItem()
         item['category'] = ad.xpath(AdItem.CATEGORY_SELECTOR).extract_first()
-        item['ad_post'] = ad.xpath(AdItem.AD_POST_SELECTOR).extract()
+        post_lines = ad.xpath(AdItem.AD_POST_SELECTOR).extract()
+        item['ad_post'] = ''.join(post_lines)
         main_section = ad.xpath(AdItem.AD_BODY_PARENT_SELECTOR)
         item['title'] = main_section.xpath(AdItem.TITLE_SELECTOR).extract_first()
         item['city'] = main_section.xpath(AdItem.AD_CITY_SELECTOR).extract_first()
@@ -55,21 +55,21 @@ class LowkeySpider(CrawlSpider):
         yield item
     
 
-    rules = [
-        Rule(
-            LinkExtractor(
-                allow=OpportunitiesItem.PAGINATION_REGEX,
-                restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
-            ),
-            callback=parse,
-            follow=True
-        ),
-        Rule(
-            LinkExtractor(
-                allow=OpportunitiesItem.PAGINATION_REGEX,
-                restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
-            ),
-            callback=parse_ad,
-            follow=False
-        )
-    ]
+    # rules = [
+    #     Rule(
+    #         LinkExtractor(
+    #             allow=OpportunitiesItem.PAGINATION_REGEX,
+    #             restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
+    #         ),
+    #         callback=parse,
+    #         follow=True
+    #     ),
+    #     Rule(
+    #         LinkExtractor(
+    #             allow=OpportunitiesItem.PAGINATION_REGEX,
+    #             restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
+    #         ),
+    #         callback=parse_ad,
+    #         follow=False
+    #     )
+    # ]
