@@ -7,13 +7,16 @@ from scrapy.linkextractors import LinkExtractor
 from ..items import OpportunitiesItem, AdItem
 import pdb
 
+# TODO Add current date here and do comparison in parse to capture only current date
+
 class LowkeySpider(Spider):
     name = 'lowkey'
     allowed_domains = ['craigslist.org']
     start_urls = ['https://madison.craigslist.org/d/jobs/search/jjj/']
 
     def parse(self, response):
-        ads = Selector(response).xpath(OpportunitiesItem.ITEM_SELECTOR)
+        selector = Selector(response)
+        ads = selector.xpath(OpportunitiesItem.ITEM_SELECTOR)
 
         for ad in ads:
             item = OpportunitiesItem()
@@ -23,6 +26,10 @@ class LowkeySpider(Spider):
             # TODO: Add filters here
             # if title does not include filter items
             yield scrapy.Request(url, self.parse_ad)
+        
+        pagination_url = selector.xpath(OpportunitiesItem.PAGINATION_SELECTOR).extract_first()
+        pagination_url = response.urljoin(pagination_url)
+        yield scrapy.Request(pagination_url, self.parse)
     
 
 
@@ -54,22 +61,3 @@ class LowkeySpider(Spider):
         item['ad_url'] = response.url
         yield item
     
-
-    # rules = [
-    #     Rule(
-    #         LinkExtractor(
-    #             allow=OpportunitiesItem.PAGINATION_REGEX,
-    #             restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
-    #         ),
-    #         callback=parse,
-    #         follow=True
-    #     ),
-    #     Rule(
-    #         LinkExtractor(
-    #             allow=OpportunitiesItem.PAGINATION_REGEX,
-    #             restrict_xpaths=OpportunitiesItem.PAGINATION_SELECTOR,
-    #         ),
-    #         callback=parse_ad,
-    #         follow=False
-    #     )
-    # ]

@@ -23,7 +23,7 @@ class OpportunitiesItem(scrapy.Item):
     # regex to restrict the links that the crawler will follow
     PAGINATION_REGEX = '.*search\/\w+.*'
     #  selector to restrict area crawler will look for links to follow
-    PAGINATION_SELECTOR = '//span[@class="buttons"]/a[@class="button next"]'
+    PAGINATION_SELECTOR = '//span[@class="buttons"]/a[@class="button next"]/@href'
 
 
 class AdItem(scrapy.Item):

@@ -26,7 +26,7 @@ class OpportunitiesPipeline(object):
         self.cur.execute("DELETE FROM ADS")
 
     def process_item(self, item, spider):
-        pdb.set_trace()
+        # pdb.set_trace()
         self.cur.execute(
             "INSERT INTO ADS (category, title, date, city, ad_url, map_address_url, ad_attributes, ad_post) \
             values(?,?,?,?,?,?,?,?)",
