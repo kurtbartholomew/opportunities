@@ -12,18 +12,14 @@ class LowKeySpiderTest(unittest.TestCase):
     def setUp(self):
         self.spider = LowkeySpider()
     
-    # TODO: Main method returns a request. Test parse instead of returned request
-    @unittest.skip
     def test_main_results_page_parse(self):
         main_results = self.spider.parse(fake_response_from_file("../templates/main_search.html"))
         result = list(main_results)[0]
-        self.assertIn('title', result)
-        self.assertIn('date', result)
+        self.assertIsInstance(result, Request)
 
     def test_ad_results_page_parse(self):
         ad_results = self.spider.parse_ad(fake_response_from_file("../templates/ad.html"))
         result = list(ad_results)[0]
-        pdb.set_trace()
         self.assertIn('category', result)
         self.assertIn('date', result)
         self.assertIn('ad_post', result)
