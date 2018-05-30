@@ -13,7 +13,6 @@ class LowkeySpider(CrawlSpider):
     start_urls = ['http://https://madison.craigslist.org/d/jobs/search/jjj/']
 
     def parse(self, response):
-        pdb.set_trace()
         ads = Selector(response).xpath(OpportunitiesItem.ITEM_SELECTOR)
 
         for ad in ads:
