@@ -30,6 +30,9 @@ class PersistenceTest(unittest.TestCase):
         self.session.add(test_ad)
         result = self.session.query(Ad).filter_by(title='Make Cheese').first()
         self.assertEqual(test_ad, result)
+        self.session.rollback()
 
     def tearDown(self):
-        pass
+        Ad.__table__.drop(self.engine)
+        self.session.close()
+        self.engine.dispose()

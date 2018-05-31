@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.engine.url import URL
 import psycopg2
 import sqlite3
 
@@ -10,27 +11,21 @@ class db_engine():
     db_instance = None
 
     def __init__(self, debug=None):
-        # pdb.set_trace()
-        # dialect = os.environ('DB_DIALECT') or 'postgresql'
-        # driver = os.environ('DB_DRIVER') or 'psycopg2'
-        # username =  os.environ('DB_USER') or 'kurt'
-        # password =  os.environ('DB_PASS') or 'cuteducki3'
-        # host =  os.environ('DB_HOST') or 'localhost'
-        # port =  os.environ('DB_PORT') or ''
-        # database =  os.environ('DB_NAME') or 'kurt'
+        CONFIG_OBJECT = {
+            'drivername' : os.getenv('DB_DIALECT', 'postgresql'),
+            'username' :  os.getenv('DB_USER', 'postgres'),
+            'password' :  os.getenv('DB_PASS', 'postgres'),
+            'host' :  os.getenv('DB_HOST', 'localhost'),
+            'port' :  os.getenv('DB_PORT','5432'),
+            'database' :  os.getenv('DB_NAME','kurt')
+        }
 
-        dialect = os.getenv('DB_DIALECT', 'postgresql')
-        driver = os.getenv('DB_DRIVER', 'psycopg2')
-        username =  os.getenv('DB_USER', 'kurt')
-        password =  os.getenv('DB_PASS', 'cuteducki3')
-        host =  os.getenv('DB_HOST', 'localhost')
-        port =  os.getenv('DB_PORT','')
-        database =  os.getenv('DB_NAME','kurt')
+        db_url = URL(**CONFIG_OBJECT)
 
         if debug:
-            self.db_instance = create_engine('sqlite:///:memory:')
+            self.db_instance = create_engine('sqlite:///test.db')
         else:
-            self.db_instance = create_engine(f'{dialect}+{driver}://{username}:{password}@{host}/{database}')
+            self.db_instance = create_engine(db_url)
 
 
 
