@@ -11,7 +11,6 @@ class Ad(Base):
     title = Column(String)
     date = Column(String)
     city = Column(String)
-    text = Column(String)
     map_address_url = Column(String)
     ad_attributes = Column(String)
     ad_url = Column(String)

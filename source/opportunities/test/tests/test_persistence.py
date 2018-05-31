@@ -5,17 +5,28 @@ from opportunities.opportunities.persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, Table, Column, Integer, String
 
-import pdb
-
 class PersistenceTest(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         eng = db.db_engine(debug=True)
         self.engine = eng.db_instance
-        Ad.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
+    @classmethod
+    def tearDownClass(self):
+        self.session.close_all()
+        self.session.close()
+        self.engine.dispose()
+    
+    def setUp(self):
+        Ad.metadata.create_all(self.engine)
+
+    def tearDown(self):
+        self.session.rollback()
+        Ad.__table__.drop(self.engine)
+        
     def test_adding_an_ad(self):
         test_ad = Ad(
                 category = 'Manual Labor',
@@ -30,9 +41,3 @@ class PersistenceTest(unittest.TestCase):
         self.session.add(test_ad)
         result = self.session.query(Ad).filter_by(title='Make Cheese').first()
         self.assertEqual(test_ad, result)
-        self.session.rollback()
-
-    def tearDown(self):
-        Ad.__table__.drop(self.engine)
-        self.session.close()
-        self.engine.dispose()

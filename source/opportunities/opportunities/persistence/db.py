@@ -13,11 +13,11 @@ class db_engine():
     def __init__(self, debug=None):
         CONFIG_OBJECT = {
             'drivername' : os.getenv('DB_DIALECT', 'postgresql'),
-            'username' :  os.getenv('DB_USER', 'postgres'),
+            'username' :  os.getenv('DB_USER', 'opp_creator'),
             'password' :  os.getenv('DB_PASS', 'postgres'),
             'host' :  os.getenv('DB_HOST', 'localhost'),
             'port' :  os.getenv('DB_PORT','5432'),
-            'database' :  os.getenv('DB_NAME','kurt')
+            'database' :  os.getenv('DB_NAME','opportunities')
         }
 
         db_url = URL(**CONFIG_OBJECT)
