@@ -4,19 +4,22 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
-from persistence import db, models
+import pdb
+pdb.set_trace()
+from persistence import db
+from persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
 
 class OpportunitiesPipeline(object):
     def __init__(self):
-        eng = db()
-        Session = sessionmaker(bind=eng.db_instance)
+        eng = db.db_engine(debug=True)
+        engine = eng.db_instance
+        Session = sessionmaker(bind=engine)
         self.session = Session()
 
     def process_item(self, item, spider):
         # pdb.set_trace()
-        ad = models.Ad(
+        ad = Ad(
             category = item.get('category'),
             title = item.get('title'), 
             date = item.get('date'), 

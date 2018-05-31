@@ -2,9 +2,9 @@ import unittest
 import sys, os
 sys.path.append(os.path.abspath('.'))
 
-import tests.test_parse as parsing
-import tests.test_utils as utils
-import tests.test_persistence as persistence
+import unit_tests.test_parse as parsing
+import unit_tests.test_utils as utils
+import unit_tests.test_persistence as persistence
 
 loader = unittest.TestLoader()
 suite = unittest.TestSuite()
