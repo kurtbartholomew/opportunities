@@ -1,18 +1,23 @@
 import unittest
 
-from opportunities.opportunities.persistence import db, models
+from opportunities.opportunities.persistence import db
+from opportunities.opportunities.persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import MetaData, Table, Column, Integer, String
+
+import pdb
 
 class PersistenceTest(unittest.TestCase):
 
-    def setUp():
-        eng = db(debug=True)
-        Session = sessionmaker(bind=eng)
+    def setUp(self):
+        eng = db.db_engine(debug=True)
+        self.engine = eng.db_instance
+        Ad.metadata.create_all(self.engine)
+        Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
     def test_adding_an_ad(self):
-        self.session.add(
-            models.Ad(
+        test_ad = Ad(
                 category = 'Manual Labor',
                 title = 'Make Cheese',
                 date = '2018-05-30 09:09:09', 
@@ -22,7 +27,9 @@ class PersistenceTest(unittest.TestCase):
                 ad_url = 'https://madison.craigslist.org/fbh/d/make-cheese/6602582230.html',
                 ad_post = 'this is a cool job'
             )
-        )
+        self.session.add(test_ad)
+        result = self.session.query(Ad).filter_by(title='Make Cheese').first()
+        self.assertEqual(test_ad, result)
 
-    def tearDown():
-        self.session.commit()
+    def tearDown(self):
+        pass

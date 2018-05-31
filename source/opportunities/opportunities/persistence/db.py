@@ -3,12 +3,14 @@ import psycopg2
 import sqlite3
 
 import os
+import pdb
 
-class db():
+class db_engine():
 
     db_instance = None
 
     def __init__(self, debug=None):
+        # pdb.set_trace()
         # dialect = os.environ('DB_DIALECT') or 'postgresql'
         # driver = os.environ('DB_DRIVER') or 'psycopg2'
         # username =  os.environ('DB_USER') or 'kurt'
@@ -26,7 +28,7 @@ class db():
         database =  os.getenv('DB_NAME','kurt')
 
         if debug:
-            self.db_instance = create_engine('sqlite:///opportunities.db')
+            self.db_instance = create_engine('sqlite:///:memory:')
         else:
             self.db_instance = create_engine(f'{dialect}+{driver}://{username}:{password}@{host}/{database}')
 

@@ -16,5 +16,10 @@ class Ad(Base):
     ad_attributes = Column(String)
     ad_url = Column(String)
     ad_post = Column(String)
+
+    def __repr__(self):
+        return "<Ad(id='%d', category='%s', title='%s', date='%s', ad_url='%s')>" % (
+            self.id, self.category, self.title, self.date, self.ad_url
+        )
     
 
