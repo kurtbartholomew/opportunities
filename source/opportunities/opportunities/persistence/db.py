@@ -23,7 +23,7 @@ class db_engine():
         db_url = URL(**CONFIG_OBJECT)
 
         if debug:
-            self.db_instance = create_engine('sqlite:///test.db')
+            self.db_instance = create_engine('sqlite:///source/opportunities/test/test.db')
         else:
             self.db_instance = create_engine(db_url)
 

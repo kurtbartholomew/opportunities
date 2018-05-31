@@ -1,7 +1,7 @@
 import unittest
 
-from opportunities.opportunities.persistence import db
-from opportunities.opportunities.persistence.models import Ad
+from opportunities.persistence import db
+from opportunities.persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, Table, Column, Integer, String
 
