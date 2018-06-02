@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, DateTime
 
 Base = declarative_base()
 
@@ -9,7 +9,7 @@ class Ad(Base):
     id = Column(Integer, primary_key=True)
     category = Column(String)
     title = Column(String)
-    date = Column(String)
+    date = Column(DateTime)
     city = Column(String)
     map_address_url = Column(String)
     ad_attributes = Column(String)
