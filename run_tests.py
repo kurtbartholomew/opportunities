@@ -13,17 +13,13 @@ import pdb
 loader = unittest.TestLoader()
 suite = unittest.TestSuite()
 
-def run_unit_tests():
+def add_unit_tests():
     suite.addTests(loader.loadTestsFromModule(parsing))
     suite.addTests(loader.loadTestsFromModule(utils))
     suite.addTests(loader.loadTestsFromModule(persistence))
-    runner = unittest.TextTestRunner(verbosity=3)
-    result = runner.run(suite)
 
-def run_functional_tests():
+def add_functional_tests():
     suite.addTests(loader.loadTestsFromModule(func_test))
-    runner = unittest.TextTestRunner(verbosity=3)
-    result = runner.run(suite)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run tests for the scraper. (by default, unit tests are run)')
@@ -32,9 +28,12 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.all:
-        run_unit_tests()
-        run_functional_tests()
+        add_unit_tests()
+        add_functional_tests()
     elif args.functional:
-        run_functional_tests()
+        add_functional_tests()
     else:
-        run_unit_tests()
+        add_unit_tests()
+    
+    runner = unittest.TextTestRunner(verbosity=3)
+    result = runner.run(suite)
