@@ -54,8 +54,10 @@ class LowkeySpider(Spider):
                                  .re(AdItem.AD_ATTRS_REGEX)
         attributes_vals = main_section.xpath(AdItem.AD_ATTRS_VALS_SELECTOR).extract()
         attributes = ""
-        for i, key in enumerate(attributes_keys):
-            attributes += f'{key}: {attributes_vals[i]},'
+        if len(attributes_keys) == len(attributes_vals):
+            for i, key in enumerate(attributes_keys):
+                attributes += f'{key}: {attributes_vals[i]},'
+
         item['ad_attributes'] = attributes
 
         item['ad_url'] = response.url
