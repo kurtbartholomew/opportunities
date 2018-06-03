@@ -4,6 +4,7 @@ from scrapy.selector import Selector
 from scrapy.spiders import Spider, CrawlSpider, Rule
 from scrapy import Spider
 from scrapy.linkextractors import LinkExtractor
+from scrapy.exceptions import CloseSpider
 from ..items import OpportunitiesItem, AdItem
 from datetime import datetime, timedelta
 import pytz
@@ -48,7 +49,9 @@ class LowkeySpider(Spider):
             if self._is_in_acceptable_time_range(utc_date):
                 url = ad.xpath(OpportunitiesItem.URL_SELECTOR).extract_first()
                 yield scrapy.Request(url, self.parse_ad)
-        
+            else:
+                raise CloseSpider("No more ads in current date range. Terminating now.")
+
         pagination_url = selector.xpath(OpportunitiesItem.PAGINATION_SELECTOR).extract_first()
         pagination_url = response.urljoin(pagination_url)
         yield scrapy.Request(pagination_url, self.parse)
