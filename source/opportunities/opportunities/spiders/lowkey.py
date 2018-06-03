@@ -5,7 +5,7 @@ from scrapy.spiders import Spider, CrawlSpider, Rule
 from scrapy import Spider
 from scrapy.linkextractors import LinkExtractor
 from ..items import OpportunitiesItem, AdItem
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import pdb
 
@@ -27,17 +27,25 @@ class LowkeySpider(Spider):
         utc_date = localized_date + localized_date.utcoffset()
         return utc_date
 
+    # since utc transformation is not always perfect, fuzz the bounds of days a bit
+    def _is_in_acceptable_time_range(self, utc_date):
+        today = pytz.utc.localize(datetime.now())
+        # TODO: Decide to either do a 1 day time delta or 7 day
+        today_upper_bound = today + timedelta(hours=1)
+        today_lower_bound = today - timedelta(hours=1)
+        return today_lower_bound.day == utc_date.day or today_upper_bound.day == utc_date.day
+
     def parse(self, response):
         selector = Selector(response)
         ads = selector.xpath(OpportunitiesItem.ITEM_SELECTOR)
 
         for ad in ads:
             item = OpportunitiesItem()
-            date_str = ad.xpath(OpportunitiesItem.DATE_SELECTOR).extract_first() 
+            date_str = ad.xpath(OpportunitiesItem.DATE_SELECTOR).extract_first()
             date = datetime.strptime(date_str, search_page_date_time_format)
             utc_date = self._convert_search_date_to_utc(date)
-            # TODO: Decide to either do a 1 day time delta or 7 day
-            if utc_date.day == datetime.utcnow().day: # if not current date, dont scrape it
+            # since utc transformation is not always perfect, fuzz the bounds of days a bit
+            if self._is_in_acceptable_time_range(utc_date):
                 url = ad.xpath(OpportunitiesItem.URL_SELECTOR).extract_first()
                 yield scrapy.Request(url, self.parse_ad)
         
