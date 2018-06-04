@@ -31,7 +31,6 @@ class LowkeySpider(Spider):
     # since utc transformation is not always perfect, fuzz the bounds of days a bit
     def _is_in_acceptable_time_range(self, utc_date):
         today = pytz.utc.localize(datetime.now())
-        # TODO: Decide to either do a 1 day time delta or 7 day
         today_upper_bound = today + timedelta(hours=1)
         today_lower_bound = today - timedelta(hours=1)
         return today_lower_bound.day == utc_date.day or today_upper_bound.day == utc_date.day
@@ -45,7 +44,6 @@ class LowkeySpider(Spider):
             date_str = ad.xpath(OpportunitiesItem.DATE_SELECTOR).extract_first()
             date = datetime.strptime(date_str, search_page_date_time_format)
             utc_date = self._convert_search_date_to_utc(date)
-            # since utc transformation is not always perfect, fuzz the bounds of days a bit
             if self._is_in_acceptable_time_range(utc_date):
                 url = ad.xpath(OpportunitiesItem.URL_SELECTOR).extract_first()
                 yield scrapy.Request(url, self.parse_ad)
@@ -66,8 +64,8 @@ class LowkeySpider(Spider):
         post_lines = ad.xpath(AdItem.AD_POST_SELECTOR).extract()
         item['ad_post'] = ''.join(post_lines)
         main_section = ad.xpath(AdItem.AD_BODY_PARENT_SELECTOR)
-        item['title'] = main_section.xpath(AdItem.TITLE_SELECTOR).extract_first()
-        item['city'] = main_section.xpath(AdItem.AD_CITY_SELECTOR).extract_first()
+        item['title'] = main_section.xpath(AdItem.TITLE_SELECTOR).extract_first().strip()
+        item['city'] = main_section.xpath(AdItem.AD_CITY_SELECTOR).extract_first().strip(' ()')
         localized_date_str = main_section.xpath(AdItem.DATE_SELECTOR).extract_first()
         item['date'] = self._convert_ad_date_to_utc(localized_date_str)
         item['map_address_url'] = main_section.xpath(AdItem.MAP_ADDRESS_SELECTOR).extract_first()
