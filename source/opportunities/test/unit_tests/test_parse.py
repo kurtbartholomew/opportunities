@@ -31,7 +31,6 @@ class LowKeySpiderTest(unittest.TestCase):
         
         if not up_to_date:
             res = requests.get(LowkeySpider.start_urls[0])
-            pdb.set_trace()
             with open(path, 'w') as search:
                 search.write(res.text)
     
@@ -63,14 +62,17 @@ class LowKeySpiderTest(unittest.TestCase):
         main_results = self.spider.parse(fake_response_from_file(SEARCH_TEMPLATE_PATH))
         results = self._filter_terminating_exceptions(main_results)                
         self.assertGreater(len(results), 1)
+
+    def _whole_list_is_same_date(self, results):
+        # if all results seem to be parsed and next page url is present
+        if len(results) > 50 and 'search/jjj?s' in results[-1].url:
+            raise CloseSpider # raise an assert to make sure date test doesn't fail
     
-    # This test may fail if the whole current front page has job postings
-    # from the current date. This does not really happen but is something to watch for.
-    # Requests are returned, so checking for dates is not really an option
     def test_main_results_throws_close_exception_for_dates_older_than_current_date(self):
         main_results = self.spider.parse(fake_response_from_file(SEARCH_TEMPLATE_PATH))
         with self.assertRaises(CloseSpider):
             results = list(main_results)
+            self._whole_list_is_same_date(results)
 
     def test_ad_results_page_parse(self):
         ad_results = self.spider.parse_ad(fake_response_from_file(AD_TEMPLATE_PATH))
