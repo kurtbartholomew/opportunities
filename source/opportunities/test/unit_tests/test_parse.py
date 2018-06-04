@@ -62,7 +62,6 @@ class LowKeySpiderTest(unittest.TestCase):
     def test_main_results_contain_ads_from_current_date(self):
         main_results = self.spider.parse(fake_response_from_file(SEARCH_TEMPLATE_PATH))
         results = self._filter_terminating_exceptions(main_results)                
-        pdb.set_trace()
         self.assertGreater(len(results), 1)
     
     # This test may fail if the whole current front page has job postings
@@ -81,3 +80,9 @@ class LowKeySpiderTest(unittest.TestCase):
         self.assertIn('ad_post', result)
         self.assertIn('title', result)
         self.assertIn('ad_url', result)
+    
+    def test_ad_results_page_parse_properly_stripped(self):
+        ad_results = self.spider.parse_ad(fake_response_from_file(AD_TEMPLATE_PATH))
+        result = list(ad_results)[0]
+        self.assertEqual(result['city'], "WATERTOWN")
+        self.assertEqual(result['title'], "PRODUCTION LINE WORKER/TRIMMER PACKER")
