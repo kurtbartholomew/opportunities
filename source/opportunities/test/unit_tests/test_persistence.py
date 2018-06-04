@@ -1,6 +1,7 @@
 import unittest
 
 from opportunities.persistence import db
+from opportunities.persistence.cache import Cache
 from opportunities.persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData
@@ -12,23 +13,21 @@ class PersistenceTest(unittest.TestCase):
     def setUpClass(self):
         eng = db.db_engine(debug=True)
         self.engine = eng.db_instance
+        Ad.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
+        cache = Cache()
+        self.cache_conn = cache.get_conn()
 
     @classmethod
     def tearDownClass(self):
         self.session.close_all()
         self.session.close()
-        self.engine.dispose()
-    
-    def setUp(self):
-        Ad.metadata.create_all(self.engine)
-
-    def tearDown(self):
-        self.session.rollback()
         Ad.__table__.drop(self.engine)
-        
-    def test_adding_an_ad(self):
+        self.engine.dispose()
+        self.cache_conn.flushall()
+    
+    def test_db_adding_an_ad(self):
         test_ad = Ad(
                 category = 'Manual Labor',
                 title = 'Make Cheese',
@@ -42,3 +41,10 @@ class PersistenceTest(unittest.TestCase):
         self.session.add(test_ad)
         result = self.session.query(Ad).filter_by(title='Make Cheese').first()
         self.assertEqual(test_ad, result)
+    
+    def test_cache_adding_a_url(self):
+        self.cache_conn.set('https://www.google.com', 1)
+        res = self.cache_conn.get('https://www.google.com')
+        self.assertNotEqual(res, None)
+
+        
