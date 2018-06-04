@@ -10,6 +10,8 @@ import test.unit_tests.test_persistence as persistence
 import test.functional_tests.test as func_test
 import pdb
 
+os.environ['SCRAPY_SETTINGS_MODULE'] = 'opportunities.settings'
+
 loader = unittest.TestLoader()
 suite = unittest.TestSuite()
 

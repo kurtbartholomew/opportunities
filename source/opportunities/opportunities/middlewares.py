@@ -6,7 +6,9 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from scrapy.exceptions import IgnoreRequest
+from opportunities.persistence import db
+from opportunities.persistence.cache import Cache
 
 class OpportunitiesSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -101,3 +103,63 @@ class OpportunitiesDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+class IgnoreDuplicateAdsRequestMiddleware(object):
+
+       # Not all methods need to be defined. If a method is not defined,
+    # scrapy acts as if the downloader middleware does not modify the
+    # passed objects.
+
+    cache_conn = None
+
+    def __init__(self):
+        cache = Cache()
+        cache_conn = cache.get_conn()
+        self.cache_conn = cache_conn
+        engine = db.db_engine()
+        db_engine = engine.db_instance
+
+        cache_conn.flushall()
+        with db_engine.connect() as db_conn:
+            results = db_conn.execute('SELECT ad_url FROM ads')
+            for result in results.fetchall():
+                cache_conn.set(result['ad_url'], 1)
+                
+    @classmethod
+    def from_crawler(cls, crawler):
+        # This method is used by Scrapy to create your spiders.
+        
+        return cls()
+
+    def process_request(self, request, spider):
+        # Called for each request that goes through the downloader
+        # middleware.
+
+        # Must either:
+        # - return None: continue processing this request
+        # - or return a Response object
+        # - or return a Request object
+        # - or raise IgnoreRequest: process_exception() methods of
+        #   installed downloader middleware will be called
+        if self.cache_conn.get(request.url) is not None:
+            raise IgnoreRequest()
+        return None
+
+    def process_response(self, request, response, spider):
+        # Called with the response returned from the downloader.
+
+        # Must either;
+        # - return a Response object
+        # - return a Request object
+        # - or raise IgnoreRequest
+        return response
+
+    def process_exception(self, request, exception, spider):
+        # Called when a download handler or a process_request()
+        # (from other downloader middleware) raises an exception.
+
+        # Must either:
+        # - return None: continue processing this exception
+        # - return a Response object: stops process_exception() chain
+        # - return a Request object: stops process_exception() chain
+        pass
