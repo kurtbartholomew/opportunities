@@ -3,7 +3,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from opportunities.spiders.lowkey import LowkeySpider
 from opportunities.persistence.models import Ad
-from opportunities.persistence import db
+from opportunities.persistence.db import Database
 from sqlalchemy.orm import sessionmaker
 
 import pdb
@@ -30,8 +30,8 @@ class FunctionalTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        eng = db.db_engine(config={'database':'test_opportunities'})
-        self.engine = eng.db_instance
+        db = Database(config={'database':'test_opportunities'})
+        self.engine = db.get_engine()
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 

@@ -5,14 +5,14 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pdb
-from persistence import db
+from persistence.db import Database
 from persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
 
 class OpportunitiesPipeline(object):
     def __init__(self):
-        eng = db.db_engine()
-        engine = eng.db_instance
+        db = Database()
+        engine = db.get_engine()
         Ad.metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
         self.session = Session()

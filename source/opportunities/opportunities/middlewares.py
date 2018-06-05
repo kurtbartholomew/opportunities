@@ -7,7 +7,7 @@
 
 from scrapy import signals
 from scrapy.exceptions import IgnoreRequest
-from opportunities.persistence import db
+from opportunities.persistence.db import Database
 from opportunities.persistence.cache import Cache
 
 class OpportunitiesSpiderMiddleware(object):
@@ -116,11 +116,9 @@ class IgnoreDuplicateAdsRequestMiddleware(object):
         cache = Cache()
         cache_conn = cache.get_conn()
         self.cache_conn = cache_conn
-        engine = db.db_engine()
-        db_engine = engine.db_instance
-
+        db = Database()
         cache_conn.flushall()
-        with db_engine.connect() as db_conn:
+        with db.get_conn() as db_conn:
             results = db_conn.execute('SELECT ad_url FROM ads')
             for result in results.fetchall():
                 cache_conn.set(result['ad_url'], 1)

@@ -1,6 +1,6 @@
 import unittest
 
-from opportunities.persistence import db
+from opportunities.persistence.db import Database
 from opportunities.persistence.cache import Cache
 from opportunities.persistence.models import Ad
 from sqlalchemy.orm import sessionmaker
@@ -11,8 +11,8 @@ class PersistenceTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        eng = db.db_engine(debug=True)
-        self.engine = eng.db_instance
+        db = Database(debug=True)
+        self.engine = db.get_engine()
         Ad.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()

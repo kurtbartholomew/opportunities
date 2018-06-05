@@ -4,11 +4,10 @@ import psycopg2
 import sqlite3
 
 import os
-import pdb
 
-class db_engine():
+class Database():
 
-    db_instance = None
+    _engine = None
     DEFAULT_CONFIG_OBJECT = {
         'drivername' : os.getenv('DB_DIALECT', 'postgresql'),
         'username' :  os.getenv('DB_USER', 'opp_creator'),
@@ -25,9 +24,15 @@ class db_engine():
 
         db_url = URL(**CONFIG_OBJECT)
         if debug:
-            self.db_instance = create_engine('sqlite:///source/opportunities/test/test.db')
+            self._engine = create_engine('sqlite:///source/opportunities/test/test.db')
         else:
-            self.db_instance = create_engine(db_url)
+            self._engine = create_engine(db_url)
+    
+    def get_engine(self):
+        return self._engine
+    
+    def get_conn(self):
+        return self._engine.connect()
 
 
 
