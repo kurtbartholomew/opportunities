@@ -141,6 +141,8 @@ class IgnoreDuplicateAdsRequestMiddleware(object):
         #   installed downloader middleware will be called
         if self.cache_conn.get(request.url) is not None:
             raise IgnoreRequest()
+        else:
+            self.cache_conn.set(request.url, 1)
         return None
 
     def process_response(self, request, response, spider):

@@ -8,6 +8,7 @@ import test.unit_tests.test_parse as parsing
 import test.unit_tests.test_utils as utils
 import test.unit_tests.test_persistence as persistence
 import test.functional_tests.test as func_test
+import test.unit_tests.test_middleware as middleware
 import requests
 import logging
 logging.basicConfig(filename='logs/test.log', level=logging.ERROR)
@@ -58,6 +59,7 @@ def add_unit_tests(suite, loader):
     suite.addTests(loader.loadTestsFromModule(parsing))
     suite.addTests(loader.loadTestsFromModule(utils))
     suite.addTests(loader.loadTestsFromModule(persistence))
+    suite.addTests(loader.loadTestsFromModule(middleware))
 
 def add_functional_tests(suite, loader):
     suite.addTests(loader.loadTestsFromModule(func_test))
