@@ -16,24 +16,6 @@ AD_TEMPLATE_PATH = "../templates/ad.html"
 
 class LowKeySpiderTest(unittest.TestCase):
 
-    @staticmethod
-    def _resolve_path(path):
-        return os.path.abspath(os.path.join(os.path.dirname(__file__),path))
-
-    @classmethod
-    def setUpClass(cls):
-        path = cls._resolve_path(SEARCH_TEMPLATE_PATH)
-        up_to_date = False
-        if os.path.isfile(path):
-            stats = os.stat(path)
-            if datetime.now().day == datetime.fromtimestamp(stats.st_mtime).day:
-                up_to_date = True
-        
-        if not up_to_date:
-            res = requests.get(LowkeySpider.start_urls[0])
-            with open(path, 'w') as search:
-                search.write(res.text)
-    
     def setUp(self):
         self.spider = LowkeySpider()
     
