@@ -10,3 +10,4 @@ logs
 ad.html
 main_search.html
 logs/*.*
+.python-version
