@@ -42,6 +42,8 @@ def prepare_templates_for_tests(template_files):
                 up_to_date = True
         
         if not up_to_date:
+            print('Attempting to retrieve new template for %s...' % (template['url']))
+            print('This might take a while...')
             res = requests.get(template['url'])
             with open(path, 'w') as search:
                 search.write(res.text)
