@@ -14,7 +14,8 @@ from requests.exceptions import ConnectionError
 from datetime import datetime
 from main_logging import configure_scrapy_log
 
-configure_scrapy_log('logs/test_opportunities.log')
+path = os.getenv('TEST_LOG_PATH', 'logs/test_opportunities.log')
+configure_scrapy_log(path)
 os.environ['SCRAPY_SETTINGS_MODULE'] = 'opportunities.settings'
 
 # TODO: Think of a better way to inject template file dependencies
