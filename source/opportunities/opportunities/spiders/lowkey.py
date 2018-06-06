@@ -80,7 +80,7 @@ class LowkeySpider(Spider):
         attributes = ""
         if len(attributes_keys) == len(attributes_vals):
             for i, key in enumerate(attributes_keys):
-                attributes += f'{key}: {attributes_vals[i]},'
+                attributes += '%s: %s,' % (key, attributes_vals[i])
 
         item['ad_attributes'] = attributes
 
