@@ -9,7 +9,9 @@ from scrapy.utils.project import get_project_settings
 from scrapy.utils.project import get_project_settings
 from opportunities.spiders.lowkey import LowkeySpider
 
-
+import logging
+from main_logging import configure_scrapy_log
+configure_scrapy_log('logs/opportunities.log', log_level=logging.ERROR)
 os.environ['SCRAPY_SETTINGS_MODULE'] = 'opportunities.settings'
 
 if __name__ == '__main__':

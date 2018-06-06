@@ -9,6 +9,7 @@ from ..items import OpportunitiesItem, AdItem
 from datetime import datetime, timedelta
 import pytz
 import pdb
+import logging
 
 search_page_date_time_format = '%Y-%m-%d %H:%M'
 ad_page_date_time_format = '%Y-%m-%dT%H:%M:%S%z'
@@ -65,7 +66,8 @@ class LowkeySpider(Spider):
         item['ad_post'] = ''.join(post_lines)
         main_section = ad.xpath(AdItem.AD_BODY_PARENT_SELECTOR)
         item['title'] = main_section.xpath(AdItem.TITLE_SELECTOR).extract_first().strip()
-        item['city'] = main_section.xpath(AdItem.AD_CITY_SELECTOR).extract_first().strip(' ()')
+        city = main_section.xpath(AdItem.AD_CITY_SELECTOR).extract_first()
+        item['city'] = city.strip(' ()') if city else 'Madison'
         localized_date_str = main_section.xpath(AdItem.DATE_SELECTOR).extract_first()
         item['date'] = self._convert_ad_date_to_utc(localized_date_str)
         item['map_address_url'] = main_section.xpath(AdItem.MAP_ADDRESS_SELECTOR).extract_first()

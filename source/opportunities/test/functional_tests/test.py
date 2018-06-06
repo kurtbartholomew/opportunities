@@ -17,9 +17,6 @@ TEST_SETTINGS = {
     'USER_AGENT' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:60.0) Gecko/20100101 Firefox/60.0',
     'COOKIES_ENABLED': False,
     'CONCURRENT_REQUESTS' : 1,
-    'LOG_LEVEL': 'DEBUG',
-    'LOG_STDOUT': True,
-    'LOG_FILE': 'logs/test_opportunities.log'
 }
 
 TEST_PIPELINES = {

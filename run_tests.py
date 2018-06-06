@@ -1,8 +1,8 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.abspath('.'), 'source/opportunities'))
 sys.path.insert(1, os.path.join(os.path.abspath('.'), 'source/opportunities/opportunities'))
-import argparse
 
+import argparse
 import unittest
 import test.unit_tests.test_parse as parsing
 import test.unit_tests.test_utils as utils
@@ -10,13 +10,11 @@ import test.unit_tests.test_persistence as persistence
 import test.functional_tests.test as func_test
 import test.unit_tests.test_middleware as middleware
 import requests
-import logging
-logging.basicConfig(filename='logs/test.log', level=logging.ERROR)
 from requests.exceptions import ConnectionError
 from datetime import datetime
+from main_logging import configure_scrapy_log
 
-
-
+configure_scrapy_log('logs/test_opportunities.log')
 os.environ['SCRAPY_SETTINGS_MODULE'] = 'opportunities.settings'
 
 # TODO: Think of a better way to inject template file dependencies
@@ -58,10 +56,10 @@ def prepare_templates_for_tests(template_files):
 def add_unit_tests(suite, loader):
     suite.addTests(loader.loadTestsFromModule(parsing))
     suite.addTests(loader.loadTestsFromModule(utils))
-    suite.addTests(loader.loadTestsFromModule(persistence))
     suite.addTests(loader.loadTestsFromModule(middleware))
 
 def add_functional_tests(suite, loader):
+    suite.addTests(loader.loadTestsFromModule(persistence))
     suite.addTests(loader.loadTestsFromModule(func_test))
 
 def parse_arguments():

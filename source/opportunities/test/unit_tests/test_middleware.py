@@ -4,7 +4,7 @@ from opportunities.middlewares import IgnoreDuplicateAdsRequestMiddleware
 from scrapy.exceptions import IgnoreRequest
 from scrapy.http import Request
 from unittest.mock import Mock, patch
-from scrapy.spider import Spider
+from scrapy.spiders import Spider
 
 class MiddlewareTest(unittest.TestCase):
 
